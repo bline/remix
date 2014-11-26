@@ -1,0 +1,12 @@
+{
+  "predef": [
+    "describe",
+    "it",
+    "beforeEach",
+    "afterEach",
+    "expect",
+    "should",
+    "global",
+    "require"
+  ]
+}
