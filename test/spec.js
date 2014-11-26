@@ -21,7 +21,7 @@
       lib.remix.should.be.a('function');
       lib.ReMix.should.be.a('function');
     });
-    describe("rematch#Re", function () {
+    describe("remix", function () {
       var lib = require(libPath);
       beforeEach(function () {
         this.re = new lib.ReMix();
