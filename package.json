@@ -1,6 +1,6 @@
 {
   "name": "remix",
-  "version": "0.0.3",
+  "version": "0.1.1",
   "description": "regular expression alternation for tokenizers",
   "main": "index.js",
   "directories": {
@@ -44,7 +44,6 @@
     "gulp-util": "^3.0.1"
   },
   "dependencies": {
-    "eventemitter2": "^0.4.14",
     "lodash": "^2.4.1"
   }
 }

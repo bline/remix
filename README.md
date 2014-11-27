@@ -25,15 +25,11 @@ var Re = require('remix').ReMix;
 
 /* named match */
 var re = new Re('foo', /foo/, /bar/);
-re.on('foo', function (name, match) {
-  /* 1st time ['foo', 3] */
-  /* 2nd time ['bar', 6] */
-  console.log(match);
-});
+
 var str = 'foobar';
-/* [['foo', 3], [undefined]] */
+/* [['foo'], 'foo', 0, 3] */
 console.log(re.exec(str));
-/* [[undefined], ['bar', 6]] */
+/* [['bar'], 'foo', 1, 6] */
 console.log(re.exec(str));
 
 ```
@@ -44,24 +40,11 @@ console.log(re.exec(str));
 
 /* embedded matches are namespaced with parent name */
 var re = new Re('foo', {foo: /foo/, bar: /bar/});
-re.on('foo.bar', function (name, match) {
-  /* ['bar', 6] */
-  console.log(match);
-});
-re.on('foo.foo', function (name, match) {
-  /* ['foo', 3] */
-  console.log(match);
-});
-re.on('foo.*', function (name, match) {
-  /* 1st time ['foo', 3] */
-  /* 2nd time ['bar', 6] */
-  console.log(match);
-});
 
 var str = 'foobar';
-/* [['foo', 3], [undefined]] */
+/* [['foo'], 'foo.foo', 0, 3] */
 console.log(re.exec(str));
-/* [[undefined], ['bar', 6]] */
+/* [['bar'], 'foo.bar', 1, 6] */
 console.log(re.exec(str));
 
 

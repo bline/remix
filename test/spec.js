@@ -52,20 +52,20 @@
         this.re.add(/foo/, /bar/).compile()._regexn.should.deep.equal([/(foo)|(bar)/g]);
       });
       it("should match simple", function () {
-        this.re.add(/(foo)o/).exec('fooo').should.deep.equal([['fooo', 'foo', 4]]);
+        this.re.add(/(foo)o/).exec('fooo').should.deep.equal([['fooo', 'foo'], '',  0, 4]);
       });
       it("should match multiple", function () {
         var str = 'foobar';
         this.re.add(/(foo)/, /bar/);
-        this.re.exec(str).should.deep.equal([['foo', 'foo', 3], [undefined]]);
-        this.re.exec(str).should.deep.equal([[undefined, undefined], ['bar', 6]]);
+        this.re.exec(str).should.deep.equal([['foo', 'foo'], '', 0, 3]);
+        this.re.exec(str).should.deep.equal([['bar'], '', 1, 6]);
         this.re._regexn.should.deep.equal([/((foo))|(bar)/g]);
       });
       it("should match multiple sets", function () {
         var str = 'foooBarr';
         this.re.add(/(foo)o/, /(bar)r/i);
-        this.re.exec(str).should.deep.equal([['fooo', 'foo', 4], [undefined, undefined]]);
-        this.re.exec(str).should.deep.equal([[undefined, undefined], ['Barr', 'Bar', 8]]);
+        this.re.exec(str).should.deep.equal([['fooo', 'foo'], '', 0, 4]);
+        this.re.exec(str).should.deep.equal([['Barr', 'Bar'], '', 1, 8]);
         this.re._regexn.should.deep.equal([/((foo)o)/g, /((bar)r)/ig]);
       });
       it("should not combine mutiline", function () {
@@ -74,15 +74,10 @@
       it("should add named", function () {
         this.re.addNamed('foo', /foo/).compile()._regexn.should.deep.equal([/(foo)/g]);
       });
-      it("should emit named match", function (done) {
+      it("should return named match", function () {
         var str = 'foo';
         this.re.add({name: 'foo.foo', re: /foo/});
-        this.re.on('foo.*', function (name, match) {
-          name.should.equal('foo.foo');
-          match.should.deep.equal(['foo', 3]);
-          done();
-        });
-        this.re.exec(str);
+        this.re.exec(str).should.deep.equal([['foo'], 'foo.foo', 0, 3]);
       });
       it("should not match", function () {
         this.re.add(/foo/).exec('bar').should.equal(false);
@@ -100,54 +95,44 @@
       it("should restart on reject", function () {
         var str = 'foobarfoo';
         this.re.add(/(foo)/);
-        this.re.exec(str).should.deep.equal([['foo', 'foo', 3]]);
+        this.re.exec(str).should.deep.equal([['foo', 'foo'], '', 0, 3]);
         this.re.reject(str);
-        this.re.exec(str).should.deep.equal([['foo', 'foo', 3]]);
-        this.re.exec(str).should.deep.equal([['foo', 'foo', 9]]);
+        this.re.exec(str).should.deep.equal([['foo', 'foo'], '', 0, 3]);
+        this.re.exec(str).should.deep.equal([['foo', 'foo'], '', 0, 9]);
       });
       it("should reject length", function () {
         var str = "fooooobarrrrrr";
         this.re.add(/(ooo|rrr)/);
-        this.re.exec(str).should.deep.equal([['ooo', 'ooo', 4]]);
-        this.re.exec(str).should.deep.equal([['rrr', 'rrr', 11]]);
+        this.re.exec(str).should.deep.equal([['ooo', 'ooo'], '', 0, 4]);
+        this.re.exec(str).should.deep.equal([['rrr', 'rrr'], '', 0, 11]);
         this.re.reject(str);
-        this.re.exec(str).should.deep.equal([['ooo', 'ooo', 4]]);
+        this.re.exec(str).should.deep.equal([['ooo', 'ooo'], '', 0, 4]);
       });
       it("should reject multi", function () {
         var str = "fooooobarrrrrr";
         this.re.add(/(ooo)/, /rrr/);
-        this.re.exec(str).should.deep.equal([['ooo', 'ooo', 4], [undefined]]);
+        this.re.exec(str).should.deep.equal([['ooo', 'ooo'], '', 0, 4]);
         this.re.reject(str);
-        this.re.exec(str).should.deep.equal([['ooo', 'ooo', 4], [undefined]]);
-        this.re.exec(str).should.deep.equal([[undefined, undefined],['rrr', 11]]);
+        this.re.exec(str).should.deep.equal([['ooo', 'ooo'], '', 0, 4]);
+        this.re.exec(str).should.deep.equal([['rrr'], '', 1, 11]);
         this.re.reject(str);
-        this.re.exec(str).should.deep.equal([['ooo', 'ooo', 4], [undefined]]);
+        this.re.exec(str).should.deep.equal([['ooo', 'ooo'], '', 0, 4]);
       });
       it("should reject multi no-join", function () {
         var str = "fooooobarrrrrr";
         this.re.add(/ooo/, /rrr/i);
-        this.re.exec(str).should.deep.equal([['ooo', 4], [undefined]]);
+        this.re.exec(str).should.deep.equal([['ooo'], '', 0, 4]);
         this.re.reject(str);
-        this.re.exec(str).should.deep.equal([['ooo', 4], [undefined]]);
-        this.re.exec(str).should.deep.equal([[undefined], ['rrr', 11]]);
+        this.re.exec(str).should.deep.equal([['ooo'], '', 0, 4]);
+        this.re.exec(str).should.deep.equal([['rrr'], '', 1, 11]);
         this.re.reject(str);
-        this.re.exec(str).should.deep.equal([['ooo', 4], [undefined]]);
+        this.re.exec(str).should.deep.equal([['ooo'], '', 0, 4]);
       });
-      it("should allow named regex", function (done) {
-        var str = 'foobar', cnt = 0;
+      it("should allow named regex", function () {
+        var str = 'foobar';
         this.re.add({name: "foo", re: new lib.ReMix(/foo/, /bar/)});
-        this.re.on('foo', function (name, match) {
-          name.should.equal("foo");
-          cnt++;
-          if (cnt === 1) {
-            match.should.deep.equal(['foo', 3]);
-          } else {
-            match.should.deep.equal(['bar', 6]);
-            done();
-          }
-        });
-        this.re.exec(str);
-        this.re.exec(str);
+        this.re.exec(str).should.deep.equal([['foo'], 'foo', 0, 3]);
+        this.re.exec(str).should.deep.equal([['bar'], 'foo', 1, 6]);
       });
     });
   });
