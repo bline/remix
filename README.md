@@ -63,10 +63,10 @@ var re = new Re({foo: /foo/, bar: /bar/});
 Re.register('matchFoo', /foo/);
 var re = new Re('foo', 'matchFoo');
 
-var re = new Re('bar', '`matchFoo*`|bar');
+var re = new Re('bar', '{matchFoo*}|bar');
 
-Re.register('matchFooOrBar', '`matchFoo`|bar');
-var re = new Re('bax', '\\s*`matchFooOrBar+`\\s*');
+Re.register('matchFooOrBar', '{matchFoo}|bar');
+var re = new Re('bax', '\\s*{matchFooOrBar+}\\s*');
 
 ```
 
