@@ -64,9 +64,9 @@
       it("should match multiple sets", function () {
         var str = 'foooBarr';
         this.re.add(/(foo)o/, /(bar)r/i);
+        this.re.compile().should.deep.equal([/((foo)o)/g, /((bar)r)/ig]);
         this.re.exec(str).should.deep.equal([['fooo', 'foo'], '', 0, 4]);
         this.re.exec(str).should.deep.equal([['Barr', 'Bar'], '', 1, 8]);
-        this.re._regexn.should.deep.equal([/((foo)o)/g, /((bar)r)/ig]);
       });
       it("should not combine mutiline", function () {
         this.re.add(/foo/, /bar/m).compile().should.deep.equal([/(foo)/g, /(bar)/mg]);
