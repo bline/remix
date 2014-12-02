@@ -76,7 +76,7 @@
       });
       it("should return named match", function () {
         var str = 'foo';
-        this.re.add({name: 'foo.foo', re: /foo/});
+        this.re.add({name: 'foo.foo', spec: /foo/});
         this.re.exec(str).should.deep.equal([['foo'], 'foo.foo', 0, 3]);
       });
       it("should not match", function () {
@@ -84,7 +84,7 @@
       });
       it("should allow named regex", function () {
         var str = 'foobar';
-        this.re.add({name: "foo", re: new lib.ReMix(/foo/, /bar/)});
+        this.re.add({name: "foo", spec: new lib.ReMix(/foo/, /bar/)});
         this.re.exec(str).should.deep.equal([['foo'], 'foo', 0, 3]);
         this.re.exec(str).should.deep.equal([['bar'], 'foo', 1, 6]);
       });
