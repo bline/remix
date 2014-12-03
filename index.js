@@ -6,8 +6,14 @@
  */
 (function () {
   'use strict';
+  /** @module remix */
+  /** @extern ReMix */
   var ReMix = require("./lib/remix");
   module.exports.ReMix = ReMix;
+  /**
+   * Constructs a ReMix object. Useful for `apply()`
+   * @returns {ReMix}
+   */
   module.exports.remix = (function () {
     function Re(args) {
       return ReMix.apply(this, args);
