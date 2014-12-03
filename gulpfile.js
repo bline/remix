@@ -11,13 +11,31 @@
   var $ = require('gulp-load-plugins')();
   var del = require('del');
   var gutil = require('gulp-util');
-  var lintSrc = ['./gulpfile.js', './index.js', './lib/**/*.js', 'test/**/*.js', 'bin/*.js'];
-  var testSrc = ['test/*helper.js', 'test/*spec.js'];
+  var pkg = require("./package.json");
+  var exec = require("child_process").exec;
+  var files = {
+    lib: ['./lib/**/*.js'],
+    lint: ['./gulpfile.js', './index.js', './lib/**/*.js', 'test/**/*.js', 'bin/*.js'],
+    test: ['test/*helper.js', 'test/*spec.js']
+  };
+  var options = {
+    jsdoc: {
+      cmd: [
+        'jsdoc',
+        '--configure ./config/jsdoc.json',
+        '--verbose',
+        '--pedantic',
+        '--readme ./README.md',
+        '--package ./package.json',
+        '--destination ./docs'
+      ]
+    }
+  };
 
   function runCoverage (opts) {
-    return gulp.src(testSrc, { read: false })
+    return gulp.src(files.test, { read: false })
       .pipe($.coverage.instrument({
-        pattern: ['./lib/**/*.js'],
+        pattern: files.lib,
         debugDirectory: 'debug'}))
       .pipe($.plumber())
       .pipe($.mocha({reporter: 'spec'})
@@ -32,13 +50,13 @@
   });
 
   gulp.task("lint", function () {
-    return gulp.src(lintSrc)
+    return gulp.src(files.lint)
       .pipe($.jshint())
       .pipe($.jshint.reporter());
   });
 
   gulp.task('test', ['lint'], function () {
-    return gulp.src(testSrc, {read: false})
+    return gulp.src(files.test, {read: false})
       .pipe($.plumber())
       .pipe($.mocha({reporter: 'spec'}).on('error', function (err) { console.log("test error: " + err); this.emit('end'); })) // test errors dropped
       .pipe($.plumber.stop());
@@ -51,8 +69,15 @@
     return runCoverage({outFile: './index.html'})
       .pipe(gulp.dest('coverage'));
   });
+  gulp.task('docs', function (done) {
+    exec(options.jsdoc.cmd.join(' '), function (err, stdout, stderr) {
+      gutil.log(stdout);
+      gutil.log(stderr);
+      done(err);
+    });
+  });
   gulp.task('watch', function () {
-    gulp.watch([lintSrc], ['test']);
+    gulp.watch(files.lint, ['test']);
   });
 
   gulp.task("default", ['test', "watch"]);
