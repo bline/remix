@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Index</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":false,"cleverLinks":false,"systemName":"ReMix","copyright":"&copy; Scott Beck 2014","linenums":true,"navType":"vertical","theme":"readable","footer":"","collapseSymbols":false,"outputSourceFiles":true,"outputSourcePath":false,"syntaxTheme":"default","default":{}};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html"></a></h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+    
+        <li class="item" data-name="ReMix">
+            <span class="title">
+                <a href="ReMix.html">ReMix</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="ReMix.defaultOptions"><a href="ReMix.html#defaultOptions">defaultOptions</a></li>
+            
+                <li data-name="ReMix.RE"><a href="ReMix.html#RE">RE</a></li>
+            
+                <li data-name="ReMix.registered"><a href="ReMix.html#registered">registered</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            <span class="subtitle">Typedefs</span>
+            
+                <li data-name="ReMix~AddSpec"><a href="ReMix.html#AddSpec">AddSpec</a></li>
+            
+                <li data-name="ReMix~NamedRegExp"><a href="ReMix.html#NamedRegExp">NamedRegExp</a></li>
+            
+                <li data-name="ReMix~Namespace"><a href="ReMix.html#Namespace">Namespace</a></li>
+            
+                <li data-name="ReMix~Options"><a href="ReMix.html#Options">Options</a></li>
+            
+                <li data-name="ReMix~Pairs"><a href="ReMix.html#Pairs">Pairs</a></li>
+            
+                <li data-name="ReMix~RegisterMatchObject"><a href="ReMix.html#RegisterMatchObject">RegisterMatchObject</a></li>
+            
+                <li data-name="ReMix~RegisterMatchSpec"><a href="ReMix.html#RegisterMatchSpec">RegisterMatchSpec</a></li>
+            
+                <li data-name="ReMix~SetupCallback"><a href="ReMix.html#SetupCallback">SetupCallback</a></li>
+            
+                <li data-name="ReMix~Template"><a href="ReMix.html#Template">Template</a></li>
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ReMix.getRegistered"><a href="ReMix.html#getRegistered">getRegistered</a></li>
+            
+                <li data-name="ReMix.register"><a href="ReMix.html#register">register</a></li>
+            
+                <li data-name="ReMix#add"><a href="ReMix.html#add">add</a></li>
+            
+                <li data-name="ReMix#addNamed"><a href="ReMix.html#addNamed">addNamed</a></li>
+            
+                <li data-name="ReMix#clear"><a href="ReMix.html#clear">clear</a></li>
+            
+                <li data-name="ReMix#compile"><a href="ReMix.html#compile">compile</a></li>
+            
+                <li data-name="ReMix#exec"><a href="ReMix.html#exec">exec</a></li>
+            
+                <li data-name="ReMix#hasSpecs"><a href="ReMix.html#hasSpecs">hasSpecs</a></li>
+            
+                <li data-name="ReMix#namespace"><a href="ReMix.html#namespace">namespace</a></li>
+            
+                <li data-name="ReMix#options"><a href="ReMix.html#options">options</a></li>
+            
+                <li data-name="ReMix#reset"><a href="ReMix.html#reset">reset</a></li>
+            
+                <li data-name="ReMix#setLastIndex"><a href="ReMix.html#setLastIndex">setLastIndex</a></li>
+            
+                <li data-name="ReMix#toString"><a href="ReMix.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+    </ul>
+</div>
+    <div class="main">
+        <h1 class="page-title" data-filename="index.html">Index</h1>
+        
+
+
+    
+
+
+    <h3>remix 0.1.2</h3>
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article class="readme"><h1>remix</h1><p>regular expression alternation for tokenizers</p>
+<h2>Mixing</h2><pre class="prettyprint source lang-javascript"><code>
+/* unnammed prositional only matches */
+var re = new Re([/foo/, /bar/]);
+
+/* does not combine */
+var re = new Re([/foo/, /bar/i]);</code></pre><h2>Named matches</h2><ul>
+<li>example 1</li>
+</ul>
+<pre class="prettyprint source lang-javascript"><code>
+var Re = require('remix').ReMix;
+
+/* named match */
+var re = new Re('foo', /foo/, /bar/);
+
+var str = 'foobar';
+/* [['foo'], 'foo', 0, 3] */
+console.log(re.exec(str));
+/* [['bar'], 'foo', 1, 6] */
+console.log(re.exec(str));</code></pre><ul>
+<li>example 2</li>
+</ul>
+<pre class="prettyprint source lang-javascript"><code>
+/* embedded matches are namespaced with parent name */
+var re = new Re('foo', {foo: /foo/, bar: /bar/});
+
+var str = 'foobar';
+/* [['foo'], 'foo.foo', 0, 3] */
+console.log(re.exec(str));
+/* [['bar'], 'foo.bar', 1, 6] */
+console.log(re.exec(str));
+
+
+/* alternative syntax */
+var re = new Re('foo', [/foo/, /bar/]);
+
+/* embedded named matches */
+var re = new Re({foo: /foo/, bar: /bar/});</code></pre><ul>
+<li>template examples</li>
+</ul>
+<pre class="prettyprint source lang-javascript"><code>
+Re.register('matchFoo', /foo/);
+var re = new Re('foo', 'matchFoo');
+
+var re = new Re('bar', '{matchFoo*}|bar');
+
+Re.register('matchFooOrBar', '{matchFoo}|bar');
+var re = new Re('bax', '\\s*{matchFooOrBar+}\\s*');</code></pre></article>
+    </section>
+
+
+
+
+
+
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Wed Dec 03 2014 22:28:05 GMT+0000 (UTC)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>
