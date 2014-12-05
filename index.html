@@ -2,8 +2,20 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Index</title>
+    <title>ReMix</title>
     
+    <meta name="description" content="named regular expression alternation for tokenizers" />
+    
+        <meta name="keywords" content="RegExp,regex,lexer,tokenizer" />
+        <meta name="keyword" content="RegExp,regex,lexer,tokenizer" />
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
     
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -17,7 +29,7 @@
     
     
     <script>
-    var config = {"monospaceLinks":false,"cleverLinks":false,"systemName":"ReMix","copyright":"&copy; Scott Beck 2014","linenums":true,"navType":"vertical","theme":"readable","footer":"","collapseSymbols":false,"outputSourceFiles":true,"outputSourcePath":false,"syntaxTheme":"default","default":{}};
+    var config = {"monospaceLinks":false,"cleverLinks":false,"applicationName":"ReMix","disqus":"","googleAnalytics":"","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"ReMix","description":"named regular expression alternation for tokenizers","keyword":"RegExp,regex,lexer,tokenizer"},"linenums":true,"default":{}};
     </script>
     
 
@@ -27,7 +39,7 @@
 <div id="wrap" class="clearfix">
     
 <div class="navigation">
-    <h3 class="applicationName"><a href="index.html"></a></h3>
+    <h3 class="applicationName"><a href="index.html">ReMix</a></h3>
 
     <div class="search">
         <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
@@ -54,8 +66,6 @@
             
             <span class="subtitle">Typedefs</span>
             
-                <li data-name="ReMix~AddSpec"><a href="ReMix.html#AddSpec">AddSpec</a></li>
-            
                 <li data-name="ReMix~NamedRegExp"><a href="ReMix.html#NamedRegExp">NamedRegExp</a></li>
             
                 <li data-name="ReMix~Namespace"><a href="ReMix.html#Namespace">Namespace</a></li>
@@ -69,6 +79,8 @@
                 <li data-name="ReMix~RegisterMatchSpec"><a href="ReMix.html#RegisterMatchSpec">RegisterMatchSpec</a></li>
             
                 <li data-name="ReMix~SetupCallback"><a href="ReMix.html#SetupCallback">SetupCallback</a></li>
+            
+                <li data-name="ReMix~Spec"><a href="ReMix.html#Spec">Spec</a></li>
             
                 <li data-name="ReMix~Template"><a href="ReMix.html#Template">Template</a></li>
             
@@ -93,11 +105,9 @@
             
                 <li data-name="ReMix#hasSpecs"><a href="ReMix.html#hasSpecs">hasSpecs</a></li>
             
-                <li data-name="ReMix#namespace"><a href="ReMix.html#namespace">namespace</a></li>
+                <li data-name="ReMix#name"><a href="ReMix.html#name">name</a></li>
             
                 <li data-name="ReMix#options"><a href="ReMix.html#options">options</a></li>
-            
-                <li data-name="ReMix#reset"><a href="ReMix.html#reset">reset</a></li>
             
                 <li data-name="ReMix#setLastIndex"><a href="ReMix.html#setLastIndex">setLastIndex</a></li>
             
@@ -135,6 +145,19 @@
 
     <section>
         <article class="readme"><h1>remix</h1><p>regular expression alternation for tokenizers</p>
+<h2>What is this?</h2><p>This allows joining regular expressions mainly for the purpos of constructing
+tokenizers.</p>
+<p>Each regular expression can be named and have sub-named expressions
+which are tracked by namespaces with configurable <a href="#options">delimiters</a>. <code>ReMix</code>
+object can also compose other <code>ReMix</code> objects.</p>
+<p>Regular expressions can be composed by <a href="#templates">simple templates</a>.</p>
+<p>Any regular expression with the same flags are joined together into a single <code>|</code>
+expression as an optimization.</p>
+<p>The main <a href="#methods-exec">exec()</a></p>
+<h2>Namespaces</h2><p>If a <code>ReMix</code> object is given a name, all it's children are prefixed with that
+name and the <a href="#options">nsDelimiter</a>. If a regular expression with a
+namespace is matched, it's namespace is returned as the second element of the
+<a href="#match-return">Match Array</a>.</p>
 <h2>Mixing</h2><pre class="prettyprint source lang-javascript"><code>
 /* unnammed prositional only matches */
 var re = new Re([/foo/, /bar/]);
@@ -171,11 +194,85 @@ console.log(re.exec(str));
 var re = new Re('foo', [/foo/, /bar/]);
 
 /* embedded named matches */
-var re = new Re({foo: /foo/, bar: /bar/});</code></pre><ul>
-<li>template examples</li>
+var re = new Re({foo: /foo/, bar: /bar/});</code></pre><h2>Members</h2><ul>
+<li>defaultOptions</li>
+<li>RE</li>
+<li>registered</li>
 </ul>
-<pre class="prettyprint source lang-javascript"><code>
-Re.register('matchFoo', /foo/);
+<h2>Methods</h2><ul>
+<li>register</li>
+<li><p>getRegistered</p>
+</li>
+<li><p>exec(string) -
+Takes a string to match on and returns an array representing the
+results. See <a href="#matches">Matches</a></p>
+</li>
+<li>setLastIndex(number) -
+Sets the last index for the next call to <code>exec()</code>.</li>
+<li>add(<a href="#add-argument">addArg</a>) -
+Add the given specification. If a namespace is set, all children in this spec
+will be prefixed when resolved. All resolution happens only once and on demand.</li>
+<li>addNamed(name, <a href="#add-argument">addArg</a>) -
+This is shorthand for <code>re.add({name: name, spec: addArg})</code></li>
+<li>hasSpecs() -
+Returns a boolean indicating if the current instance has any regular expression.</li>
+<li>compile(force) -
+Compiles the current specification and returns the array of regular expressions
+generated. No need to call this yourself unless you are debugging or testing. This
+is called from <code>exec()</code> and <code>toString()</code>. <code>compile()</code> will cache the results unless
+<code>force</code> is <code>true</code>.</li>
+<li>options([opt]) -
+If options are specified, they are merged with the current options. Returns
+the current options object.</li>
+<li>name([name]) -
+Sets or retrieves the current <code>name</code>. The <code>name</code> is used to build the full
+namespace of each match.</li>
+<li>clear() -
+This clears all add specifications and resets compilation. This effectively puts the
+object in a pristine state.</li>
+<li>toString() -
+This is for debugging purposes and should not be used for matching.</li>
+</ul>
+<h2>Options</h2><ul>
+<li><p>nsDelimiter - Sets the delimiter to use for named expressions to create namespaces (default <code>.</code>).</p>
+</li>
+<li><p>defaultFlags - These are the default flags all regular expressions are constructed with. (default <code>g</code>).</p>
+</li>
+</ul>
+<h2>Add Argument</h2><h2>Matches</h2><h2>Templates</h2><p>Templates are a very simple way to compose regular expressesion. Templates
+can be used in the place of regular expressions. You can register new templates
+or use the existing predefined templates. Here is a list:</p>
+<ul>
+<li><p>hspace - Horizontal space, including unicode horizontal space code points</p>
+</li>
+<li><p>noHspace - hspace negated</p>
+</li>
+<li><p>vspace - Vertical space character class</p>
+</li>
+<li><p>number - General number match, includes all Javascript supported number formated</p>
+</li>
+<li><p>noVspace - Negated vspace character class</p>
+</li>
+<li><p>space - /\s/</p>
+</li>
+<li><p>noSpace - /\S/</p>
+</li>
+<li><p>word - /\w/</p>
+</li>
+<li><p>noWord - /\W/</p>
+</li>
+<li><p>any - Match any one character, doesn't depend on RegExp flags</p>
+</li>
+<li><p>eol - Match EOL on any platform</p>
+</li>
+<li><p>notEol- Not EOL character class</p>
+</li>
+<li><p>end - END of string or line depending on RegExp flags</p>
+</li>
+<li><p>begin - Beginning of line or string depending on RegExp flags</p>
+</li>
+</ul>
+<h3>Template Example</h3><pre class="prettyprint source lang-javascript"><code>Re.register('matchFoo', /foo/);
 var re = new Re('foo', 'matchFoo');
 
 var re = new Re('bar', '{matchFoo*}|bar');
@@ -192,7 +289,7 @@ var re = new Re('bax', '\\s*{matchFooOrBar+}\\s*');</code></pre></article>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Wed Dec 03 2014 22:31:22 GMT+0000 (UTC)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Fri Dec 05 2014 18:57:01 GMT+0000 (UTC)
         </footer>
     </div>
 </div>
