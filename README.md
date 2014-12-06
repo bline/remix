@@ -147,14 +147,24 @@ ReMix.register({
 });
 ```
 
+Example of how templates integrate with ReMix.
 ```javascript
-Re.register('matchFoo', /foo/);
-var re = new Re('foo', 'matchFoo');
+ReMix.register('matchFoo', /foo/);
+var remix = new ReMix('foo', 'matchFoo');
 
-var re = new Re('bar', '{matchFoo*}|bar');
+var remix = new ReMix('bar', '{matchFoo*}|bar');
 
-Re.register('matchFooOrBar', '{matchFoo}|bar');
-var re = new Re('bax', '\\s*{matchFooOrBar+}\\s*');
+ReMix.register('matchFooOrBar', '{matchFoo}|bar');
+var remix = new ReMix('bax', '\\s*{matchFooOrBar+}\\s*');
 
 ```
 
+# SEE ALSO
+
+[ReMix Class API Documentation](http://bline.github.io/remix/ReMix.html)
+
+# LICENSE
+
+Copyright (C) 2014 Scott Beck, all rights reserved
+
+Licensed under the [MIT](./LICENSE) license
