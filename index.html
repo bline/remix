@@ -66,9 +66,9 @@
             
             <span class="subtitle">Typedefs</span>
             
-                <li data-name="ReMix~NamedRegExp"><a href="ReMix.html#NamedRegExp">NamedRegExp</a></li>
+                <li data-name="ReMix~Name"><a href="ReMix.html#Name">Name</a></li>
             
-                <li data-name="ReMix~Namespace"><a href="ReMix.html#Namespace">Namespace</a></li>
+                <li data-name="ReMix~NamedRegExp"><a href="ReMix.html#NamedRegExp">NamedRegExp</a></li>
             
                 <li data-name="ReMix~Options"><a href="ReMix.html#Options">Options</a></li>
             
@@ -145,7 +145,7 @@
 
     <section>
         <article class="readme"><h1>remix</h1><p>regular expression alternation for tokenizers</p>
-<h2>What is this?</h2><p>This allows joining regular expressions mainly for the purpos of constructing
+<h1>What is this?</h1><p>This allows joining regular expressions mainly for the purpos of constructing
 tokenizers.</p>
 <p>Each regular expression can be named and have sub-named expressions
 which are tracked by namespaces with configurable <a href="#options">delimiters</a>. <code>ReMix</code>
@@ -154,16 +154,16 @@ object can also compose other <code>ReMix</code> objects.</p>
 <p>Any regular expression with the same flags are joined together into a single <code>|</code>
 expression as an optimization.</p>
 <p>The main <a href="#methods-exec">exec()</a></p>
-<h2>Namespaces</h2><p>If a <code>ReMix</code> object is given a name, all it's children are prefixed with that
+<h1>Namespaces</h1><p>If a <code>ReMix</code> object is given a name, all it's children are prefixed with that
 name and the <a href="#options">nsDelimiter</a>. If a regular expression with a
 namespace is matched, it's namespace is returned as the second element of the
 <a href="#match-return">Match Array</a>.</p>
-<h2>Mixing</h2><pre class="prettyprint source lang-javascript"><code>
+<h1>Mixing</h1><pre class="prettyprint source lang-javascript"><code>
 /* unnammed prositional only matches */
 var re = new Re([/foo/, /bar/]);
 
 /* does not combine */
-var re = new Re([/foo/, /bar/i]);</code></pre><h2>Named matches</h2><ul>
+var re = new Re([/foo/, /bar/i]);</code></pre><h1>Named matches</h1><ul>
 <li>example 1</li>
 </ul>
 <pre class="prettyprint source lang-javascript"><code>
@@ -194,33 +194,96 @@ console.log(re.exec(str));
 var re = new Re('foo', [/foo/, /bar/]);
 
 /* embedded named matches */
-var re = new Re({foo: /foo/, bar: /bar/});</code></pre><h2>Members</h2><ul>
+var re = new Re({foo: /foo/, bar: /bar/});</code></pre><h1>Members</h1><ul>
 <li>defaultOptions</li>
 <li>RE</li>
 <li>registered</li>
 </ul>
-<h2>Methods</h2><ul>
-<li>register</li>
-<li><p>getRegistered</p>
-</li>
-<li><p>exec(string) -
-Takes a string to match on and returns an array representing the
+<h1>Methods <a name="methods"></a></h1><h2>register <em>(static)</em><a name="methods-register-static"></a></h2><h3>Syntax</h3><blockquote>
+<pre class="prettyprint lang-javascript">Spec spec = RegExp re | String template
+ReMix ReMix.register((String name, Spec spec) | { name1: Spec spec1, ... })
+</pre>
+
+</blockquote>
+<h3>Description</h3><p>Register a template for later composition. Arguments are in one of two
+formats. Both forms specify <code>name</code>/<code>spec</code> pair(s). A name is a simple identifier
+which should match <code>/^\w+$/</code>. The <code>spec</code> can be either a regular expression or
+or another template.</p>
+<h3>Example</h3><pre class="prettyprint source lang-javascript"><code>    ReMix.register('eol',        /(?:\r\n?|\n|\f)/);
+    ReMix.register('emptyLines', '{eol}{eol+}');
+
+    ReMix.register({
+      cMultiComment: /\/\*[^*]*\*+(?:[^\/*][^*]*\*+)*\//,
+      cLineComment:  &quot;//{notEol*}{eol}&quot;
+    });</code></pre><p><a name="methods-getregistered-static"></a></p>
+<h2>getRegistered <span class="label label-default">static</span></h2><h3>Syntax</h3><pre class="prettyprint">
+<blockquote>
+RegExp re = ReMix.getRegister(String name)</blockquote></pre>
+
+<h3>Description</h3><p>Retrieves a registered regular expression. <code>name</code> is the identifier
+the expression is registered under.</p>
+<h3>Example</h3><pre class="prettyprint source lang-javascript"><code>  var regex = ReMix.getRegistered('eol');</code></pre><h2>exec <a name="methods-exec"></a></h2><h3>Syntax</h3><blockquote>
+<p>Array match = remix.exec(String string)</p>
+</blockquote>
+<h3>Description</h3><p>Takes a string to match on and returns an array representing the
 results. See <a href="#matches">Matches</a></p>
-</li>
-<li>setLastIndex(number) -
-Sets the last index for the next call to <code>exec()</code>.</li>
-<li>add(<a href="#add-argument">addArg</a>) -
-Add the given specification. If a namespace is set, all children in this spec
-will be prefixed when resolved. All resolution happens only once and on demand.</li>
-<li>addNamed(name, <a href="#add-argument">addArg</a>) -
-This is shorthand for <code>re.add({name: name, spec: addArg})</code></li>
-<li>hasSpecs() -
-Returns a boolean indicating if the current instance has any regular expression.</li>
-<li>compile(force) -
-Compiles the current specification and returns the array of regular expressions
-generated. No need to call this yourself unless you are debugging or testing. This
-is called from <code>exec()</code> and <code>toString()</code>. <code>compile()</code> will cache the results unless
-<code>force</code> is <code>true</code>.</li>
+<h3>Example</h3><pre class="prettyprint source lang-javascript"><code>var re = new ReMix('foobar', /foo(bar)/, { bar: /bar/, baz: { boo: /boo/ } });
+var str = &quot;foobarboobarfoobar&quot;, match;
+
+match = re.exec(str); // [ [ 'foobar', 'bar' ], 'foobar',         0,  6 ]
+match = re.exec(str); // [ [ 'boo'           ], 'foobar.baz.boo', 2,  9 ]
+match = re.exec(str); // [ [ 'bar'           ], 'foobar.bar',     1, 12 ]
+match = re.exec(str); // [ [ 'foobar', 'bar' ], 'foobar',         0, 18 ]
+match = re.exec(str); // false</code></pre><h2>setLastIndex <a name="methods-setlastindex"></a></h2><h3>Syntax <a name="methods-setlastindex-syntax"></a></h3><blockquote>
+<p>remix.setLastIndex(UInt index)</p>
+</blockquote>
+<h3>Description <a name="methods-setlastindex-description"></a></h3><p>Sets the last index for the next call to <code>exec()</code>.</p>
+<h3>Example</h3><pre class="prettyprint source lang-javascript"><code>remix.setLastIndex(0);</code></pre><h2>add(<a href="#add-argument">addArg</a>)</h2><h3>Syntax</h3><blockquote>
+<p>ReMix remix.add(<a href="#add-argument">addArg</a>)</p>
+</blockquote>
+<h3>Description</h3><p>Add the given specification. If a namespace is set, all children in this spec
+will be prefixed when resolved. All resolution happens only once and on demand.</p>
+<h3>Example</h3><pre class="prettyprint source lang-javascript"><code>var re = new ReMix();
+re.add(/regexp/);       // RegExp
+re.add(function () {    // <a href="ReMix.html#SetupCallback">ReMix~SetupCallback</a>
+ return {               // <a href="ReMix.html#NamedRegExp">ReMix~NamedRegExp</a>
+   name: &quot;foo&quot;
+   spec: [              // <a href="ReMix.html#Spec">ReMix~Spec</a>[]
+     {                  // <a href="ReMix.html#Pairs">ReMix~Pairs</a>
+       baz: 'foo{eol}$' // <a href="ReMix.html#Template">ReMix~Template</a>
+     },
+     function () {      // <a href="ReMix.html#SetupCallback">ReMix~SetupCallback</a>
+       return /bar/
+     }
+   ]
+ };
+});</code></pre><h2>addNamed</h2><h3>Syntax</h3><blockquote>
+<p>ReMix remix.addNamed(String name, <a href="#add-argument">addArg</a>)</p>
+</blockquote>
+<h3>Description</h3><p>This is shorthand for <code>re.add({name: name, spec: addArg})</code></p>
+<h3>Example</h3><pre class="prettyprint source lang-javascript"><code>var re = new ReMix();
+re.addNamed(&quot;Bareword&quot;, /\w+/);</code></pre><h2>hasSpecs</h2><h3>Syntax</h3><blockquote>
+<p>Boolean hasSpecs()</p>
+</blockquote>
+<h3>Description</h3><p>Returns a boolean indicating if the current instance has any regular
+expression.</p>
+<h3>Example</h3><pre class="prettyprint source lang-javascript"><code>var re = new ReMix();
+
+console.log(re.hasSpec()); // false
+
+re.add(/foo/);
+
+console.log(re.hasSpec()); // true
+
+re.clear();
+
+console.log(re.hasSpec()); // false</code></pre><h2>compile</h2><h2>Syntax</h2><blockquote>
+<pre class="prettyprint source"><code>Array regexn = remix.compile(Boolean force)</code></pre></blockquote>
+<p>  Compiles the current specification and returns the array of regular expressions
+  generated. No need to call this yourself unless you are debugging or testing. This
+  is called from <code>exec()</code> and <code>toString()</code>. <code>compile()</code> will cache the results unless
+  <code>force</code> is <code>true</code>.</p>
+<ul>
 <li>options([opt]) -
 If options are specified, they are merged with the current options. Returns
 the current options object.</li>
@@ -289,7 +352,7 @@ var re = new Re('bax', '\\s*{matchFooOrBar+}\\s*');</code></pre></article>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Fri Dec 05 2014 18:57:01 GMT+0000 (UTC)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Sat Dec 06 2014 01:52:37 GMT+0000 (UTC)
         </footer>
     </div>
 </div>

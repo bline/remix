@@ -66,9 +66,9 @@
             
             <span class="subtitle">Typedefs</span>
             
-                <li data-name="ReMix~NamedRegExp"><a href="ReMix.html#NamedRegExp">NamedRegExp</a></li>
+                <li data-name="ReMix~Name"><a href="ReMix.html#Name">Name</a></li>
             
-                <li data-name="ReMix~Namespace"><a href="ReMix.html#Namespace">Namespace</a></li>
+                <li data-name="ReMix~NamedRegExp"><a href="ReMix.html#NamedRegExp">NamedRegExp</a></li>
             
                 <li data-name="ReMix~Options"><a href="ReMix.html#Options">Options</a></li>
             
@@ -151,7 +151,7 @@
     
         
         <div class="tag-source">
-            lib/remix.js, line 38
+            lib/remix.js, line 51
         </div>
         
     </div>
@@ -164,8 +164,8 @@
     <div class="description">
         <p>Construct a new <code>ReMix</code> object.</p>
 <p>The name sets this ReMix's name. The name is used when
-returning matches. All sub-child named matches will be prefixed with
-their parent's name follow by <code>nsDelimiter</code>. <code>name</code> is optional.</p>
+returning matches. All sub-child matches are namespaced based
+on the hierarchy of names. <code>name</code> is optional.</p>
 <p>Any arguments after <code>name</code> are passed to <a href="ReMix.html#add">ReMix#add</a>.</p>
     </div>
     
@@ -203,7 +203,7 @@ their parent's name follow by <code>nsDelimiter</code>. <code>name</code> is opt
             <td class="type">
             
                 
-<span class="param-type">ReMix~Name</span>
+<span class="param-type"><a href="ReMix.html#Name">ReMix~Name</a></span>
 
 
             
@@ -292,6 +292,25 @@ their parent's name follow by <code>nsDelimiter</code>. <code>name</code> is opt
     
     
     
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>var a1 = new ReMix('a1'),
+    a2 = new ReMix('a2'),
+   str = "foobar";
+
+a1.options({nsDelimiter: '/'});
+a1.add({foo: /foo/});
+a2.add({bar: /bar/});
+
+a1.add(a2);
+
+console.log(a1.exec(str)); // [['foo'], 'a1/foo',    0, 3]
+console.log(a1.exec(str)); // [['foo'], 'a1/a2/bar', 1, 6]</code></pre>
+    
+
     
 </dd>
 
@@ -463,7 +482,7 @@ their parent's name follow by <code>nsDelimiter</code>. <code>name</code> is opt
     
         
         <div class="tag-source">
-            lib/remix.js, line 229
+            lib/remix.js, line 253
         </div>
         
     </div>
@@ -583,6 +602,14 @@ regular expression.</li>
     
     
     
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>var regex = ReMix.getRegistered('templateName');</code></pre>
+    
+
+    
 </dd>
 
         
@@ -596,7 +623,7 @@ regular expression.</li>
     
         
         <div class="tag-source">
-            lib/remix.js, line 206
+            lib/remix.js, line 228
         </div>
         
     </div>
@@ -706,6 +733,21 @@ a single argument is expected and should be a <a href="ReMix.html#RegisterMatchO
     
     
     
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>ReMix.register('end', /$/)
+     .register('eol', /(?:\r\n?|\n|\f)/);
+
+ReMix.register({
+  word:        /\w+/,
+  space:       /\s+/,
+  wordOrSpace: '{word}|{space}'
+});</code></pre>
+    
+
+    
 </dd>
 
         
@@ -719,7 +761,7 @@ a single argument is expected and should be a <a href="ReMix.html#RegisterMatchO
     
         
         <div class="tag-source">
-            lib/remix.js, line 368
+            lib/remix.js, line 404
         </div>
         
     </div>
@@ -847,7 +889,7 @@ a single argument is expected and should be a <a href="ReMix.html#RegisterMatchO
     
         
         <div class="tag-source">
-            lib/remix.js, line 382
+            lib/remix.js, line 418
         </div>
         
     </div>
@@ -858,7 +900,7 @@ a single argument is expected and should be a <a href="ReMix.html#RegisterMatchO
     
     
     <div class="description">
-        <p>Add a named specification. This is synonimous with <code>remix.add({name: name, spec: spec})</code>.</p>
+        <p>Add a named specification. This is synonymous with <code>remix.add({name: name, spec: spec})</code>.</p>
     </div>
     
 
@@ -910,7 +952,7 @@ a single argument is expected and should be a <a href="ReMix.html#RegisterMatchO
                         
                     
                 
-                <p>The namespace for this specification.</p></td>
+                <p>The name for this specification.</p></td>
         </tr>
 	
 	
@@ -1003,7 +1045,7 @@ a single argument is expected and should be a <a href="ReMix.html#RegisterMatchO
     
         
         <div class="tag-source">
-            lib/remix.js, line 355
+            lib/remix.js, line 391
         </div>
         
     </div>
@@ -1079,7 +1121,7 @@ a single argument is expected and should be a <a href="ReMix.html#RegisterMatchO
     
         
         <div class="tag-source">
-            lib/remix.js, line 401
+            lib/remix.js, line 437
         </div>
         
     </div>
@@ -1201,7 +1243,7 @@ to be compiled will call this.</p>
     
         
         <div class="tag-source">
-            lib/remix.js, line 457
+            lib/remix.js, line 493
         </div>
         
     </div>
@@ -1323,9 +1365,9 @@ flag is set).</p>
     
     <pre class="prettyprint"><code>var re = new ReMix('fb', { foo: /(fo)o/, bar: /ba(r)/ });
 var str = "foobar", match;
-
-match = re.exec(str); // [['foo', 'fo'], 'fb.foo', 0, 3]
-match = re.exec(str); // [['bar',  'r'], 'fb.bar', 1, 6]
+                      // match           Namespace  Spec Idx  lastIndex
+match = re.exec(str); // [['foo', 'fo'], 'fb.foo',  0,        3]
+match = re.exec(str); // [['bar',  'r'], 'fb.bar',  1,        6]
 match = re.exec(str); // false</code></pre>
     
 
@@ -1343,7 +1385,7 @@ match = re.exec(str); // false</code></pre>
     
         
         <div class="tag-source">
-            lib/remix.js, line 391
+            lib/remix.js, line 427
         </div>
         
     </div>
@@ -1414,12 +1456,12 @@ match = re.exec(str); // false</code></pre>
     <div class="nameContainer">
         <h4 class="name" id="name">
             
-            name<span class="signature">(<span class="optional">name</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{ReMix~Name}</span>
+            name<span class="signature">(<span class="optional">name</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="ReMix.html#Name">ReMix~Name</a>}</span>
         </h4>
     
         
         <div class="tag-source">
-            lib/remix.js, line 341
+            lib/remix.js, line 377
         </div>
         
     </div>
@@ -1469,7 +1511,7 @@ and will happen the next time it's needed.</p>
             <td class="type">
             
                 
-<span class="param-type">ReMix~Name</span>
+<span class="param-type"><a href="ReMix.html#Name">ReMix~Name</a></span>
 
 
             
@@ -1540,6 +1582,18 @@ current name.
     
     
     
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>var remix = new ReMix();
+remix.name('s1');
+remix.add(/foo/);
+
+remix.exec("foo"); // [['foo'], 's1', 0, 3]</code></pre>
+    
+
+    
 </dd>
 
         
@@ -1553,7 +1607,7 @@ current name.
     
         
         <div class="tag-source">
-            lib/remix.js, line 273
+            lib/remix.js, line 303
         </div>
         
     </div>
@@ -1673,6 +1727,18 @@ current options object.</li>
     
     
     
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>var remix = new ReMix();
+remix.options({
+  nsDelimiter:  '.', // default
+  defaultFlags: 'g'  // default
+});</code></pre>
+    
+
+    
 </dd>
 
         
@@ -1686,7 +1752,7 @@ current options object.</li>
     
         
         <div class="tag-source">
-            lib/remix.js, line 428
+            lib/remix.js, line 464
         </div>
         
     </div>
@@ -1807,7 +1873,7 @@ current options object.</li>
     
         
         <div class="tag-source">
-            lib/remix.js, line 513
+            lib/remix.js, line 549
         </div>
         
     </div>
@@ -1883,6 +1949,67 @@ compiled regular expressions.</p>
                 
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="Name">Name<span class="type-signature type string">string</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>The name being set. This can be anything but should not
+contain the ReMix~Options.nsDelimiter</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code>var re = new ReMix();
+re.namespace("foo");
+re.add({bar: /bar/});
+re.add({baz: /baz/});
+var str = "barbaz", match;
+
+match = re.exec(str); // [["bar"], "foo.bar", 0, 3]
+match = re.exec(str); // [["baz"], "foo.baz", 1, 6]</code></pre>
+    
+
+    
+</dd>
+
+            
+                
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="NamedRegExp">NamedRegExp<span class="type-signature type object">Object</span> </h4>
     </div>
     
@@ -1891,8 +2018,8 @@ compiled regular expressions.</p>
 <dd>
     
     <div class="description">
-        <p>This is a simple way to specify a single namespace within the current
-without having to create a new ReMix object.</p>
+        <p>This is a simple way to specify a single named specification within the current
+without having to create a new <code>ReMix</code> object.</p>
     </div>
     
     
@@ -1932,7 +2059,7 @@ without having to create a new ReMix object.</p>
             <td class="type">
             
                 
-<span class="param-type"><a href="ReMix.html#Namespace">ReMix~Namespace</a></span>
+<span class="param-type"><a href="ReMix.html#Name">ReMix~Name</a></span>
 
 
             
@@ -1942,7 +2069,7 @@ without having to create a new ReMix object.</p>
             
             
             
-            <td class="description last"><p>Adds to the current namespace for <code>re</code> which affect all children namespaces for matches composed into the ReMix.</p></td>
+            <td class="description last"><p>Adds to the current name for <code>re</code> which affect all children names for matches composed into the <code>ReMix</code>.</p></td>
         </tr>
 	
 	
@@ -2011,67 +2138,6 @@ without having to create a new ReMix object.</p>
                 
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="Namespace">Namespace<span class="type-signature type string">string</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>The namespace being set. This can be anything but should not
-contain the ReMix~Options.nsDelimiter</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-        <h5>Example</h5>
-        
-
-    
-    <pre class="prettyprint"><code>var re = new ReMix();
-re.namespace("foo");
-re.add({bar: /bar/});
-re.add({baz: /baz/});
-var str = "barbaz", match;
-
-match = re.exec(str); // [["bar"], "foo.bar", 0, 3]
-match = re.exec(str); // [["baz"], "foo.baz", 1, 6]</code></pre>
-    
-
-    
-</dd>
-
-            
-                
-<dt>
-    <div class="nameContainer">
         <h4 class="name" id="Options">Options<span class="type-signature type object">Object</span> </h4>
     </div>
     
@@ -2126,7 +2192,7 @@ match = re.exec(str); // [["baz"], "foo.baz", 1, 6]</code></pre>
             
             
             
-            <td class="description last"><p>Sets the delimiter used for setting the <a href="ReMix.html#Namespace">ReMix~Namespace</a> of named children. Defaults to '.'.</p></td>
+            <td class="description last"><p>Sets the delimiter used for setting the ReMix~Namespace of named children. Defaults to '.'.</p></td>
         </tr>
 	
 	
@@ -2190,7 +2256,7 @@ match = re.exec(str); // [["baz"], "foo.baz", 1, 6]</code></pre>
                 
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="Pairs">Pairs<span class="type-signature type object.<remix~namespace, remix~spec>">Object.&lt;<a href="ReMix.html#Namespace">ReMix~Namespace</a>, <a href="ReMix.html#Spec">ReMix~Spec</a>></span> </h4>
+        <h4 class="name" id="Pairs">Pairs<span class="type-signature type object.<remix~namespace, remix~spec>">Object.&lt;ReMix~Namespace, <a href="ReMix.html#Spec">ReMix~Spec</a>></span> </h4>
     </div>
     
     
@@ -2359,7 +2425,7 @@ ReMix.register('emptyLines', '{eol}{eol+}');</code></pre>
     
         
         <div class="tag-source">
-            lib/remix.js, line 541
+            lib/remix.js, line 577
         </div>
         
     </div>
@@ -2639,7 +2705,7 @@ re.add(/{fooOrBar?}{foo}\s+/.source); // alternativly, {} has no special meaning
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Fri Dec 05 2014 18:57:01 GMT+0000 (UTC)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Sat Dec 06 2014 01:52:37 GMT+0000 (UTC)
         </footer>
     </div>
 </div>
