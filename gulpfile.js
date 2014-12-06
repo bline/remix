@@ -12,8 +12,10 @@
   var del = require('del');
   var gutil = require('gulp-util');
   var pkg = require("./package.json");
+  var path = require("path");
   var exec = require("child_process").exec;
   var files = {
+    docsDest: path.join(process.cwd(), '/docs/remix/' + pkg.version),
     lib: ['./lib/**/*.js'],
     lint: ['./gulpfile.js', './index.js', './lib/**/*.js', 'test/**/*.js', 'bin/*.js'],
     test: ['test/*helper.js', 'test/*spec.js']
@@ -69,12 +71,24 @@
     return runCoverage({outFile: './index.html'})
       .pipe(gulp.dest('coverage'));
   });
-  gulp.task('docs', function (done) {
+  gulp.task('clean-docs', function (done) {
+    del(['./docs/**/*'], done);
+  });
+  gulp.task('docs', ['clean-docs'], function (done) {
     exec(options.jsdoc.cmd.join(' '), function (err, stdout, stderr) {
       gutil.log(stdout);
       gutil.log(stderr);
-      done(err);
+      if (err) return done(err);
+      gulp.src('favicon.ico')
+        .pipe(gulp.dest(files.docsDest))
+        .on('end', done);
     });
+  });
+  gulp.task('publish-docs', ['docs'], function () {
+    return gulp.src('./docs/remix/**/*', {
+        base: files.docsDest
+      })
+      .pipe($.ghPages());
   });
   gulp.task('watch', function () {
     gulp.watch(files.lint, ['test']);
