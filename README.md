@@ -159,6 +159,23 @@ var remix = new ReMix('bax', '\\s*{matchFooOrBar+}\\s*');
 
 ```
 
+# BUGS
+
+Please report bug [here](https://github.com/bline/remix/issues).
+
+***This is BETA software. Please report bugs or submit PR's.***
+
+Although I know of no bugs, the current test coverage is not complete.
+
+# TODO
+
+* Complete test coverage.
+* Add browser tests.
+* Add travis.
+* Add badges.
+* Better, less contrived examples.
+* More information in this README.md.
+
 # SEE ALSO
 
 [ReMix Class API Documentation](http://bline.github.io/remix/ReMix.html)
