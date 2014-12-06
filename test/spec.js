@@ -62,11 +62,18 @@
         this.re._regexn.should.deep.equal([/((foo))|(bar)/g]);
       });
       it("should match multiple sets", function () {
-        var str = 'foooBarr';
+        var str = 'fooofooofoooBarrfoooBarrfoooBarr';
         this.re.add(/(foo)o/, /(bar)r/i);
         this.re.compile().should.deep.equal([/((foo)o)/g, /((bar)r)/ig]);
         this.re.exec(str).should.deep.equal([['fooo', 'foo'], '', 0, 4]);
-        this.re.exec(str).should.deep.equal([['Barr', 'Bar'], '', 1, 8]);
+        this.re.exec(str).should.deep.equal([['fooo', 'foo'], '', 0, 8]);
+        this.re.exec(str).should.deep.equal([['fooo', 'foo'], '', 0, 12]);
+        this.re.exec(str).should.deep.equal([['Barr', 'Bar'], '', 1, 16]);
+        this.re.exec(str).should.deep.equal([['fooo', 'foo'], '', 0, 20]);
+        this.re.exec(str).should.deep.equal([['Barr', 'Bar'], '', 1, 24]);
+        this.re.exec(str).should.deep.equal([['fooo', 'foo'], '', 0, 28]);
+        this.re.exec(str).should.deep.equal([['Barr', 'Bar'], '', 1, 32]);
+        this.re.exec(str).should.deep.equal(false);
       });
       it("should not combine mutiline", function () {
         this.re.add(/foo/, /bar/m).compile().should.deep.equal([/(foo)/g, /(bar)/mg]);
@@ -74,10 +81,34 @@
       it("should add named", function () {
         this.re.addNamed('foo', /foo/).compile().should.deep.equal([/(foo)/g]);
       });
+      it("should allow ReMix~Pairs", function () {
+        this.re.add({foo: {bar: /bar/}, baz: /baz/});
+        var str = "barbazbarbaz";
+        this.re.exec(str).should.deep.equal([['bar'], 'foo.bar', 0, 3]);
+        this.re.exec(str).should.deep.equal([['baz'], 'baz', 1, 6]);
+        this.re.exec(str).should.deep.equal([['bar'], 'foo.bar', 0, 9]);
+        this.re.exec(str).should.deep.equal([['baz'], 'baz', 1, 12]);
+        this.re.exec(str).should.deep.equal(false);
+      });
       it("should return named match", function () {
         var str = 'foo';
         this.re.add({name: 'foo.foo', spec: /foo/});
         this.re.exec(str).should.deep.equal([['foo'], 'foo.foo', 0, 3]);
+      });
+      it("should allow nested delimited", function () {
+        var a1 = new lib.ReMix('a1'),
+            a2 = new lib.ReMix('a2'),
+            str = "foobar";
+
+        a1.options({nsDelimiter: '/'});
+        a1.add({foo: /foo/});
+        a2.add({bar: /bar/});
+
+        a1.add(a2);
+
+        a1.exec(str).should.deep.equal([['foo'], 'a1/foo',    0, 3]);
+        a1.exec(str).should.deep.equal([['bar'], 'a1/a2/bar', 1, 6]);
+        a1.exec(str).should.equal(false);
       });
       it("should not match", function () {
         this.re.add(/foo/).exec('bar').should.equal(false);
