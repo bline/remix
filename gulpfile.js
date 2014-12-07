@@ -90,6 +90,9 @@
       })
       .pipe($.ghPages());
   });
+  gulp.task('watch-coverage', function () {
+    gulp.watch(files.lint, ['coverage']);
+  });
   gulp.task('watch', function () {
     gulp.watch(files.lint, ['test']);
   });
