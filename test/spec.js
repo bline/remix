@@ -32,17 +32,17 @@
       it("should accept regexp object", function () {
         var re = /foo/;
         this.re = new lib.ReMix(re);
-        expect(this.re.toString()).to.equal('(foo)');
+        expect(this.re.asString()).to.equal('(foo)');
       });
       it("should accept string", function () {
         var str = 'foo';
         this.re = new lib.ReMix(null, str);
-        expect(this.re.toString()).to.equal('(foo)');
+        expect(this.re.asString()).to.equal('(foo)');
       });
       it("should accept array", function () {
         var arr = ['foo', 'bar'];
         this.re = new lib.ReMix(null, arr);
-        expect(this.re.toString()).to.equal('(foo)|(bar)');
+        expect(this.re.asString()).to.equal('(foo)|(bar)');
       });
       it("should compile simple regexp", function () {
         var re = /foo/;
