@@ -89,6 +89,8 @@
             
                 <li data-name="ReMix.register"><a href="ReMix.html#register">register</a></li>
             
+                <li data-name="ReMix.unregister"><a href="ReMix.html#unregister">unregister</a></li>
+            
                 <li data-name="ReMix#add"><a href="ReMix.html#add">add</a></li>
             
                 <li data-name="ReMix#addNamed"><a href="ReMix.html#addNamed">addNamed</a></li>
@@ -388,7 +390,7 @@ console.log(a1.exec(str)); // [['foo'], 'a1/a2/bar', 1, 6]</code></pre>
     
         
         <div class="tag-source">
-            lib/remix.js, line 256
+            lib/remix.js, line 269
         </div>
         
     </div>
@@ -661,6 +663,127 @@ ReMix.register({
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="unregister">
+            
+            <span class="type-signature static">static</span>ReMix.unregister<span class="signature">(identifier)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="ReMix.html">ReMix</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            lib/remix.js, line 256
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>UnRegister a match template variable.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>identifier</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Registered identifier to be removed.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="add">
             
             add<span class="signature">(spec)</span>
@@ -668,7 +791,7 @@ ReMix.register({
     
         
         <div class="tag-source">
-            lib/remix.js, line 407
+            lib/remix.js, line 420
         </div>
         
     </div>
@@ -796,7 +919,7 @@ ReMix.register({
     
         
         <div class="tag-source">
-            lib/remix.js, line 421
+            lib/remix.js, line 434
         </div>
         
     </div>
@@ -952,7 +1075,7 @@ ReMix.register({
     
         
         <div class="tag-source">
-            lib/remix.js, line 552
+            lib/remix.js, line 565
         </div>
         
     </div>
@@ -1029,7 +1152,7 @@ compiled regular expressions.</p>
     
         
         <div class="tag-source">
-            lib/remix.js, line 394
+            lib/remix.js, line 407
         </div>
         
     </div>
@@ -1105,7 +1228,7 @@ compiled regular expressions.</p>
     
         
         <div class="tag-source">
-            lib/remix.js, line 440
+            lib/remix.js, line 453
         </div>
         
     </div>
@@ -1227,7 +1350,7 @@ to be compiled will call this.</p>
     
         
         <div class="tag-source">
-            lib/remix.js, line 496
+            lib/remix.js, line 509
         </div>
         
     </div>
@@ -1369,7 +1492,7 @@ match = re.exec(str); // false</code></pre>
     
         
         <div class="tag-source">
-            lib/remix.js, line 430
+            lib/remix.js, line 443
         </div>
         
     </div>
@@ -1445,7 +1568,7 @@ match = re.exec(str); // false</code></pre>
     
         
         <div class="tag-source">
-            lib/remix.js, line 380
+            lib/remix.js, line 393
         </div>
         
     </div>
@@ -1591,7 +1714,7 @@ remix.exec("foo"); // [['foo'], 's1', 0, 3]</code></pre>
     
         
         <div class="tag-source">
-            lib/remix.js, line 306
+            lib/remix.js, line 319
         </div>
         
     </div>
@@ -1736,7 +1859,7 @@ remix.options({
     
         
         <div class="tag-source">
-            lib/remix.js, line 467
+            lib/remix.js, line 480
         </div>
         
     </div>
@@ -2332,7 +2455,7 @@ ReMix.register('emptyLines', '{eol}{eol+}');</code></pre>
     
         
         <div class="tag-source">
-            lib/remix.js, line 580
+            lib/remix.js, line 593
         </div>
         
     </div>
@@ -2605,7 +2728,7 @@ re.add(/{fooOrBar?}{foo}\s+/.source); // alternativly, {} has no special meaning
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Sun Dec 07 2014 16:47:43 GMT+0000 (UTC)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Sun Dec 07 2014 18:27:33 GMT+0000 (UTC)
         </footer>
     </div>
 </div>
