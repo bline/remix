@@ -95,6 +95,13 @@
         this.re.add({name: 'foo.foo', spec: /foo/});
         this.re.exec(str).should.deep.equal([['foo'], 'foo.foo', 0, 3]);
       });
+      it("should allow naming", function () {
+        this.re.add(/foo/);
+        this.re.compile().should.deep.equal([/(foo)/g]);
+        this.re.name('foo');
+        expect(this.re._regexn).to.be.null();
+        this.re.exec("foo").should.deep.equal([['foo'], 'foo', 0, 3]);
+      });
       it("should allow nested delimited", function () {
         var a1 = new lib.ReMix('a1'),
             a2 = new lib.ReMix('a2'),
@@ -118,6 +125,52 @@
         this.re.add({name: "foo", spec: new lib.ReMix(/foo/, /bar/)});
         this.re.exec(str).should.deep.equal([['foo'], 'foo', 0, 3]);
         this.re.exec(str).should.deep.equal([['bar'], 'foo', 1, 6]);
+      });
+      it("should allow unregistering", function () {
+        lib.ReMix.register('foo', /foo/);
+        lib.ReMix.unregister('foo');
+        expect(lib.ReMix.getRegistered('foo')).to.be.null();
+      });
+      it("should allow registered templates", function () {
+        lib.ReMix.register('fooOrBar', /foo|bar/);
+        this.re.add('fooOrBar');
+        this.re.asString().should.equal("((?:foo|bar))");
+        lib.ReMix.unregister('fooOrBar');
+      });
+      it("should throw for registering the same name", function () {
+        lib.ReMix.register('foo', /foo/);
+        expect(function () {lib.ReMix.register('foo', /foo/);}).to.throw();
+        lib.ReMix.unregister('foo');
+      });
+      it("should allow composing templates", function () {
+        lib.ReMix.register('foo', /foobly/);
+        lib.ReMix.register('bar', '{foo}|bar');
+        this.re.add('bar').asString().should.equal('((?:(?:foobly)|bar))');
+        lib.ReMix.unregister('foo');
+        lib.ReMix.unregister('bar');
+      });
+      it("should throw for invalid type", function () {
+        expect(function () {lib.ReMix.register([/foo/]);}).to.throw();
+      })
+      it("should allow pairs for registering", function () {
+        lib.ReMix.register({fooOrBar: /fooo|baar/});
+        this.re.add('fooOrBar');
+        this.re.asString().should.equal("((?:fooo|baar))");
+        lib.ReMix.unregister('fooOrBar');
+      });
+      it("should return unregistered templates unmodified", function () {
+        this.re.add('{foo}');
+        this.re.add('fooOrBar');
+        this.re.asString().should.equal("({foo})|(fooOrBar)");
+      });
+      it("should allow escaped template", function () {
+        lib.ReMix.register('foo', /foo/);
+        this.re.add('\\{foo}');
+        this.re.add('\\\\{foo}');
+        this.re.add('\\\\\\{foo}');
+        this.re.add('\\\\\\\\{foo}');
+        this.re.asString().should.equal('(\\{foo})|(\\\\(?:foo))|(\\\\\\{foo})|(\\\\\\\\(?:foo))');
+        lib.ReMix.unregister('foo');
       });
     });
   });
