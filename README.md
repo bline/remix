@@ -2,7 +2,7 @@ remix
 =====
 [![NPM](https://nodei.co/npm/remix.png?compact=true)](https://npmjs.org/package/remix)
 
-[![Coverage Status](https://img.shields.io/coveralls/bline/remix.svg)](https://coveralls.io/r/bline/remix?branch=master) [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/bline/remix?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/bline/remix.svg?branch=master)](https://travis-ci.org/bline/remix) [![Coverage Status](https://img.shields.io/coveralls/bline/remix.svg)](https://coveralls.io/r/bline/remix?branch=master) [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/bline/remix?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 regular expression alternation for tokenizers
 
