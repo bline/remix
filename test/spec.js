@@ -151,7 +151,7 @@
       });
       it("should throw for invalid type", function () {
         expect(function () {lib.ReMix.register([/foo/]);}).to.throw();
-      })
+      });
       it("should allow pairs for registering", function () {
         lib.ReMix.register({fooOrBar: /fooo|baar/});
         this.re.add('fooOrBar');
